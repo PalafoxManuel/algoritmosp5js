@@ -1,6 +1,6 @@
 let numSlices = 12;  // Valor por defecto
 let radius = 100;    // Radio de los círculos
-let inputSlices, updateButton;
+let inputSlices;
 
 function setup() {
   createCanvas(900, 300);
@@ -8,14 +8,11 @@ function setup() {
   stroke(0);
   strokeWeight(2);
   noLoop();
-  
-  // Crear input y botón para actualizar la cantidad de cortes
+
   inputSlices = createInput(numSlices.toString(), 'number');
   inputSlices.position(20, height + 20);
   inputSlices.style('width', '50px');
-  updateButton = createButton('Actualizar cortes');
-  updateButton.position(inputSlices.x + inputSlices.width + 10, height + 20);
-  updateButton.mousePressed(updateSlices);
+  inputSlices.input(updateSlices);
   
   drawAll();
 }
@@ -92,7 +89,7 @@ function drawLinePuntoPendiente(x0, y0, x1, y1) {
   }
 }
 
-// Algoritmo 2: DDA
+// Algoritmo 2: DDA (Digital Differential Analyzer)
 function drawLineDDA(x0, y0, x1, y1) {
   let dx = x1 - x0;
   let dy = y1 - y0;
