@@ -1,5 +1,5 @@
-let numSlices = 12;  // Valor por defecto
-let radius = 100;    // Radio de los círculos
+let numSlices = 12;
+let radius = 100;
 let inputSlices;
 
 function setup() {
@@ -19,28 +19,28 @@ function setup() {
 
 function drawAll() {
   background(255);
-  // Primer círculo: Ecuación punto-pendiente
+  
+  // Círculo 1: Ecuación Punto-Pendiente
   let center1 = createVector(150, 150);
-  ellipse(center1.x, center1.y, radius * 2);
+  drawCircleMidpoint(center1.x, center1.y, radius);
   drawPizzaSlices(center1, radius, numSlices, drawLinePuntoPendiente);
   textAlign(CENTER);
   text("Ecuación Punto-Pendiente", center1.x, center1.y + radius + 20);
   
-  // Segundo círculo: Algoritmo DDA
+  // Círculo 2: Algoritmo DDA
   let center2 = createVector(450, 150);
-  ellipse(center2.x, center2.y, radius * 2);
+  drawCircleMidpoint(center2.x, center2.y, radius);
   drawPizzaSlices(center2, radius, numSlices, drawLineDDA);
   text("Algoritmo DDA", center2.x, center2.y + radius + 20);
   
-  // Tercer círculo: Algoritmo Bresenham
+  // Círculo 3: Algoritmo Bresenham
   let center3 = createVector(750, 150);
-  ellipse(center3.x, center3.y, radius * 2);
+  drawCircleMidpoint(center3.x, center3.y, radius);
   drawPizzaSlices(center3, radius, numSlices, drawLineBresenham);
   text("Algoritmo Bresenham", center3.x, center3.y + radius + 20);
 }
 
 function updateSlices() {
-  // Convertir el valor del input a número y actualizar numSlices
   let val = parseInt(inputSlices.value());
   if (!isNaN(val) && val > 0) {
     numSlices = val;
@@ -56,14 +56,43 @@ function redrawCanvas() {
 function drawPizzaSlices(center, radius, slices, drawFunc) {
   for (let i = 0; i < slices; i++) {
     let angle = TWO_PI / slices * i;
-    // Calculamos el punto en la circunferencia
     let xEnd = center.x + radius * cos(angle);
     let yEnd = center.y + radius * sin(angle);
-    // Dibujamos la línea desde el centro hasta el borde usando el algoritmo
     drawFunc(round(center.x), round(center.y), round(xEnd), round(yEnd));
   }
 }
 
+// ---------------------
+function drawCircleMidpoint(xc, yc, r) {
+  let x = 0;
+  let y = r;
+  let p = 5 / 4 - r;
+  plotCirclePoints(xc, yc, x, y);
+  
+  while (x < y) {
+    x++;
+    if (p < 0) {
+      p = p + 2 * x + 1;
+    } else {
+      y--;
+      p = p + 2 * x + 1 - 2 * y;
+    }
+    plotCirclePoints(xc, yc, x, y);
+  }
+}
+
+function plotCirclePoints(xc, yc, x, y) {
+  point(xc + x, yc + y);
+  point(xc - x, yc + y);
+  point(xc + x, yc - y);
+  point(xc - x, yc - y);
+  point(xc + y, yc + x);
+  point(xc - y, yc + x);
+  point(xc + y, yc - x);
+  point(xc - y, yc - x);
+}
+
+// ---------------------
 // Algoritmo 1: Ecuación Punto-Pendiente
 function drawLinePuntoPendiente(x0, y0, x1, y1) {
   let dx = x1 - x0;
@@ -89,7 +118,8 @@ function drawLinePuntoPendiente(x0, y0, x1, y1) {
   }
 }
 
-// Algoritmo 2: DDA (Digital Differential Analyzer)
+// ---------------------
+// Algoritmo 2: DDA
 function drawLineDDA(x0, y0, x1, y1) {
   let dx = x1 - x0;
   let dy = y1 - y0;
@@ -105,6 +135,7 @@ function drawLineDDA(x0, y0, x1, y1) {
   }
 }
 
+// ---------------------
 // Algoritmo 3: Bresenham
 function drawLineBresenham(x0, y0, x1, y1) {
   let dx = abs(x1 - x0);
